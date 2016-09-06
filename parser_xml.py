@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 from bs4 import BeautifulSoup
+import csv
+
 page3=[]
 row=[]
 top=0
+writer = csv.writer(open("Lauterstein-Bretten.csv", "w"), delimiter = ";")
 with open('Lauterstein-Bretten.xml') as fd:
   soup = BeautifulSoup(fd.read(), 'xml')
   for page in soup.find_all('page',number='3'):
@@ -14,5 +17,4 @@ with open('Lauterstein-Bretten.xml') as fd:
         row = [text.string]
       else:
         row.append(text.string)
-
-print(page3)
+writer.writerows(page3)
