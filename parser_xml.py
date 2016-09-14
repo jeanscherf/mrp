@@ -1,13 +1,18 @@
+
+
+
+
 #!/usr/bin/python3
 from bs4 import BeautifulSoup
 import csv
 import os
 import sys
+import subprocess
 
 if len(sys.argv) < 2:
     print("Parser - version 0.1")
     print("")
-    print("Usage: python "+sys.argv[0]+" <XML file> [optional: file type]")
+    print("Usage: python "+sys.argv[0]+" <PDF file> [optional: file type]")
     print("")
     quit()
 else :
@@ -21,7 +26,9 @@ else :
 print("file: "+sys.argv[1])
 
 print("Converting PDF to XML...")
-os.system("pdftohtml -s -i -xml "+pdffile+" "+xmlfile)
+# substitute os.system for subprocess
+xml = subprocess.run(['pdftohtml', '-s', '-i', '-xml', pdffile])
+#os.system("pdftohtml -s -i -xml "+pdffile+" "+xmlfile)
 
 page3 = []
 row = []
