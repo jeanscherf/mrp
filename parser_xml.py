@@ -1,7 +1,3 @@
-
-
-
-
 #!/usr/bin/python3
 from bs4 import BeautifulSoup
 import csv
@@ -12,7 +8,7 @@ import subprocess
 if len(sys.argv) < 2:
     print("Parser - version 0.1")
     print("")
-    print("Usage: python "+sys.argv[0]+" <PDF file> [optional: file type]")
+    print("Usage: python "+sys.argv[0]+" <XML file> [optional: file type]")
     print("")
     quit()
 else :
@@ -25,20 +21,12 @@ else :
 
 print("file: "+sys.argv[1])
 
-print("Converting PDF to XML...")
-# substitute os.system for subprocess
-xml = subprocess.run(['pdftohtml', '-s', '-i', '-xml', pdffile])
-#os.system("pdftohtml -s -i -xml "+pdffile+" "+xmlfile)
-
-page3 = []
-row = []
-top = 0
-c = 0
-pagenumber = ['3', '4']
-
-if ((len(sys.argv)==3 and sys.argv[2]=='csv')  or len(sys.argv) < 3) :
-    print("Generating CSV...")
-    writer = csv.writer(open(csvfile, "w"), delimiter=";")
+def XMLpage34():
+    page34 = []
+    row = []
+    top = 0
+    c = 0
+    pagenumber = ['3', '4']
     with open(xmlfile) as fd:
         soup = BeautifulSoup(fd.read(), 'xml')
         for page in soup.find_all('page', number=pagenumber):
@@ -50,16 +38,28 @@ if ((len(sys.argv)==3 and sys.argv[2]=='csv')  or len(sys.argv) < 3) :
 
                 if top != old_top:
                     c = 1
-                    page3.append(row)
+                    page34.append(row)
                     row = [text.string]
                 else:
                     c += 1
                     if (c == t & c == 3):
                         row.append('')
                     row.append(text.string)
+    page34.append(row)
+    return page34
 
-    page3.append(row)
-    writer.writerows(page3)
+# substitute os.system for subprocess and skipping xmlfile creation
+xml = subprocess.run(['pdftohtml', '-s', '-i', '-xml', pdffile])
+
+#os.system("pdftohtml -s -i -xml "+pdffile+" "+xmlfile)
+
+
+if ((len(sys.argv)==3 and sys.argv[2]=='csv') or len(sys.argv) < 3) :
+    #writer = csv.writer(open(csvfile, "w"), delimiter=";")
+    with open(csvfile, "w") as writer:
+        writer = csv.writer(writer, delimiter = ";")
+        writer.writerows(XMLpage34())
+    #print(XMLpage34())
 
 elif (sys.argv[2]=='json'):
     print("Generating JSON...")
