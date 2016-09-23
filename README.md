@@ -30,7 +30,6 @@ Usage:
 `python parser_xml.py <PDF file> [optional: file type]`
 
 ## TODO
-* It parses just the table 3 from pages 3 and 4.
 * It parses just to csv. JSON and YAML yet to come functional.
 * Table 1 comes next
 * Skip the xml creation. Maybe pipe from stdout.
